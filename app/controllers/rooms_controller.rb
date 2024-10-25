@@ -35,6 +35,15 @@ class RoomsController < ApplicationController
 
   # PATCH/PUT /rooms/1 or /rooms/1.json
   def update
+
+    respond_to do |format|
+      if @room.update room_params
+        format.turbo_stream {render turbo_stream: turbo_stream.replace("room_#{@room.id}", partial: 'shared/room', locals: {room: @room})}
+      else
+        format.html {render :edit}
+        #format.turbo_stream {render turbo_stream: turbo_stream.replace("room_#{@room.id}", partial: 'rooms/form', locals: {room: @room})}
+      end
+    end
   end
 
   # DELETE /rooms/1 or /rooms/1.json
