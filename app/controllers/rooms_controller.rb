@@ -23,6 +23,14 @@ class RoomsController < ApplicationController
   # POST /rooms or /rooms.json
   def create
     @room = Room.new(room_params)
+
+    respond_to do |format|
+      if @room.save
+        format.turbo_stream {render turbo_stream: turbo_stream.append('rooms', partial: 'shared/room', locals: {room: @room})}
+      else
+        format.turbo_stream {render turbo_stream: turbo_stream.replace('room_form', partial: 'rooms/form', locals: {room: @room})}
+      end
+    end
   end
 
   # PATCH/PUT /rooms/1 or /rooms/1.json
