@@ -3,7 +3,8 @@ class Message < ApplicationRecord
   belongs_to :room
 
   after_create_commit :broadcast_messages_create
-  after_update :broadcast_messages_update
+  after_update_commit :broadcast_messages_update
+  after_destroy_commit :broadcast_messages_destroy
 
     private 
     
@@ -13,5 +14,9 @@ class Message < ApplicationRecord
 
     def broadcast_messages_update
       broadcast_replace_to('room_messages_channel', partial: 'messages/message', locals: {message: self}, target: "message_#{id}")
-  end
+    end
+
+    def broadcast_messages_destroy 
+      broadcast_remove_to('room_messages_channel',locals: {message: self}, target: "message_#{id}")
+    end
 end

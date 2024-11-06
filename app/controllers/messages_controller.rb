@@ -1,6 +1,6 @@
 class MessagesController < ApplicationController
     before_action :set_room, only: %i[create edit]
-    before_action :set_message, only: %i[edit update]
+    before_action :set_message, only: %i[edit update destroy]
 
 
     def create
@@ -27,7 +27,11 @@ class MessagesController < ApplicationController
     end
 
     def destroy
-        debugger
+        @message.destroy
+        
+        respond_to do |format|
+            format.turbo_stream
+        end
     end
         
     
